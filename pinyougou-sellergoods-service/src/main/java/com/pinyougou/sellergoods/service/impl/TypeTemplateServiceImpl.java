@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.mapper.TbSpecificationOptionMapper;
 import com.pinyougou.pojo.TbSpecificationOption;
@@ -15,6 +16,7 @@ import com.pinyougou.pojo.TbTypeTemplate;
 import com.pinyougou.pojo.TbTypeTemplateExample;
 import com.pinyougou.pojo.TbTypeTemplateExample.Criteria;
 import com.pinyougou.sellergoods.service.TypeTemplateService;
+import org.springframework.data.redis.core.RedisTemplate;
 import page.PageResult;
 
 /**
@@ -110,28 +112,57 @@ public class TypeTemplateServiceImpl implements TypeTemplateService {
 
 			List<TbTypeTemplate> tbTypeTemplates = typeTemplateMapper.selectByExample(example);
 			PageInfo pageInfo=new PageInfo(tbTypeTemplates);
+
+			//缓存处理,讲不经常变更的数据存入缓存中,因为每次都要经过分页查询所以在此进行缓存的存储
+            saveRedis();
 			return new PageResult(pageInfo.getTotal(), pageInfo.getList());
 	}
+
+
+
+    @Autowired
+	private RedisTemplate redisTemplate;
+	/**
+	 * 将品牌列表和规格列表存入缓存
+     *
+	 */
+	private void saveRedis(){
+        List<TbTypeTemplate> typeTemplateList = findAll();
+        for (TbTypeTemplate typeTemplate : typeTemplateList) {
+            //品牌列表
+            List<Map> brandList = JSON.parseArray(typeTemplate.getBrandIds(), Map.class);
+            //缓存品牌列表
+            redisTemplate.boundHashOps("brandList").put(typeTemplate.getId(),brandList);
+
+            //规格列表,通过规格id在查出规格选项调用方法
+            List<Map> specList = findSpecList(typeTemplate.getId());
+            //缓存列表
+            redisTemplate.boundHashOps("specList").put(typeTemplate.getId(),specList);
+        }
+    }
+
+
+
 
     @Autowired
 	private TbSpecificationOptionMapper specificationOptionMapper;
 	@Override
 	public List<Map> findSpecList(Long id) {
-		//查询规格
-        TbTypeTemplate tbTypeTemplate = typeTemplateMapper.selectByPrimaryKey(id);
-        //获取字段spec_ids的数据
-        String specIds = tbTypeTemplate.getSpecIds();
-        //将specIds转换成json集合对象,参数1:需要转换的json字符串,参数2;被转换的数据类型
-        List<Map> list = JSON.parseArray(specIds, Map.class);
-        //遍历集合获取到规格id并通过规格id获取规格列表
-        for (Map map : list) {
-            TbSpecificationOptionExample example=new TbSpecificationOptionExample();
-            TbSpecificationOptionExample.Criteria criteria = example.createCriteria();
-            criteria.andSpecIdEqualTo(new Long((Integer)map.get("id")));
-            List<TbSpecificationOption> options = specificationOptionMapper.selectByExample(example);
-            //将获取到的集合以键值对存入map
-            map.put("options",options);
-        }
+            //查询规格
+            TbTypeTemplate tbTypeTemplate = typeTemplateMapper.selectByPrimaryKey(id);
+            //获取字段spec_ids的数据
+            String specIds = tbTypeTemplate.getSpecIds();
+            //将specIds转换成json集合对象,参数1:需要转换的json字符串,参数2;被转换的数据类型
+            List<Map> list = JSON.parseArray(specIds, Map.class);
+            //遍历集合获取到规格id并通过规格id获取规格列表
+            for (Map map : list) {
+                TbSpecificationOptionExample example=new TbSpecificationOptionExample();
+                TbSpecificationOptionExample.Criteria criteria = example.createCriteria();
+                criteria.andSpecIdEqualTo(new Long((Integer)map.get("id")));
+                List<TbSpecificationOption> options = specificationOptionMapper.selectByExample(example);
+                //将获取到的集合以键值对存入map
+                map.put("options",options);
+            }
         return list;
 	}
 }
