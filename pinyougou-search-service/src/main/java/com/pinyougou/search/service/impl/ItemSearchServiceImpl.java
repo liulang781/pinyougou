@@ -56,6 +56,25 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     }
 
     /**
+     * 更新索引库
+     * @param list
+     */
+    @Override
+    public void importList(List list) {
+        solrTemplate.saveBeans(list);
+        solrTemplate.commit();
+    }
+
+    @Override
+    public void deleteByGoodsIds(List goodsIds) {
+        Query query = new SimpleQuery();
+        Criteria criteria = new Criteria("item_goodsid").in(goodsIds);
+        query.addCriteria(criteria);
+        solrTemplate.delete(query);
+        solrTemplate.commit();
+    }
+
+    /**
      * 获得高亮集合操作
      * @param searchMap
      * @return

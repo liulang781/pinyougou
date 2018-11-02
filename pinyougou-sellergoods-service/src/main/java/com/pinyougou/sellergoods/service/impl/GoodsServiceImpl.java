@@ -1,4 +1,5 @@
 package com.pinyougou.sellergoods.service.impl;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,8 @@ public class GoodsServiceImpl implements GoodsService {
 		item.setCreateTime(new Date());
 		//修改日期
 		item.setUpdateTime(new Date());
-
+		//状态
+		item.setStatus("1");
 		//品牌名称
 		TbBrand tbBrand = brandMapper.selectByPrimaryKey(goods.getGoods().getBrandId());
 		item.setBrand(tbBrand.getName());
@@ -262,5 +264,21 @@ public class GoodsServiceImpl implements GoodsService {
 			tbGoods.setAuditStatus(status);
 			goodsMapper.updateByPrimaryKey(tbGoods);
 		}
+	}
+
+	/**
+	 * ids为审核后的商品goodsId
+	 * @param ids
+	 * @param status
+	 * @return
+	 */
+	@Override
+	public List<TbItem> findItemListByGoodsIdAndStatus(Long[] ids, String status) {
+		TbItemExample example = new TbItemExample();
+		TbItemExample.Criteria criteria = example.createCriteria();
+		criteria.andGoodsIdIn(Arrays.asList(ids));
+		criteria.andStatusEqualTo(status);
+		List<TbItem> list = itemMapper.selectByExample(example);
+		return list;
 	}
 }

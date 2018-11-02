@@ -4,6 +4,7 @@ import java.util.List;
 import Bean.Goods;
 import com.pinyougou.pojo.TbGoods;
 
+import com.pinyougou.pojo.TbItem;
 import page.PageResult;
 
 /**
@@ -70,4 +71,14 @@ public interface GoodsService {
 	 */
 
 	void updateStatus(Long[] ids, String status);
+
+	/**
+	 * 通过商品管理中审核通过的goodsId和审核通过后的状态查询item(sku)导入索引库
+	 * @param ids
+	 * @param status
+	 * @return
+	 */
+	public List<TbItem> findItemListByGoodsIdAndStatus(Long[] ids , String status);
+
+
 }

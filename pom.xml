@@ -23,6 +23,9 @@
         <module>pinyougou-search-interface</module>
         <module>pinyougou-search-service</module>
         <module>pinyougou-search-web</module>
+        <module>pinyougou-detailpage-interface</module>
+        <module>pinyougou-detailpage-service</module>
+        <module>pinyougou-detailpage-web</module>
     </modules>
     <!-- 集中定义依赖版本号 -->
     <properties>
@@ -287,6 +290,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>2.3.23</version>
             </dependency>
         </dependencies>
 

@@ -1,4 +1,5 @@
 package com.pinyougou.sellergoods.service.impl;
+import java.util.Arrays;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
@@ -136,5 +137,7 @@ public class ItemServiceImpl implements ItemService {
 			PageInfo pageInfo = new PageInfo(tbItems);
 			return new PageResult(pageInfo.getTotal(), pageInfo.getList());
 	}
-	
+
+
+
 }
