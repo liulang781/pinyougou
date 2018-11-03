@@ -1,0 +1,1 @@
+var app=angular.module("pinyougou",[]);//定义商品模块
