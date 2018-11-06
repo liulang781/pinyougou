@@ -11,6 +11,11 @@
 
     <artifactId>pinyougou-common</artifactId>
     <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!--图片上传依赖-->
         <dependency>
             <groupId>org.csource.fastdfs</groupId>

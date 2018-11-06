@@ -12,7 +12,6 @@ app.controller("brandController",function ($scope,$controller, brandService) {
             function (response) {
                 $scope.list=response;
             });
-
     };
 
     //分页查询

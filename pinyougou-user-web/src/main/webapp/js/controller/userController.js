@@ -37,6 +37,14 @@ app.controller('userController' ,function($scope ,$controller  ,userService){
             }
 		)
     }
-    
-    
+
+    //获取当前登录名
+	$scope.showName=function () {
+		userService.showName().success(
+			function (response) {
+				$scope.loginName=response.loginName;
+				
+            }
+		)
+    }
 });	
