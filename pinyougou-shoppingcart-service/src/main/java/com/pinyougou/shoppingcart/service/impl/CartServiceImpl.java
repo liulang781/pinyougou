@@ -1,16 +1,13 @@
 package com.pinyougou.shoppingcart.service.impl;
 
 import Bean.Cart;
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.pinyougou.mapper.TbItemMapper;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrderItem;
-import com.pinyougou.pojo.TbSeller;
 import com.pinyougou.shoppingcart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +24,6 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private RedisTemplate redisTemplate;
-
-
     /**
      *
      * @param cartList  本地购物车和redis购物车
@@ -138,7 +133,6 @@ public class CartServiceImpl implements CartService {
         return cartList1;
     }
 
-
     /**
      * 通过商家id查询该商家购物车对象
      * @param cartList
@@ -195,6 +189,4 @@ public class CartServiceImpl implements CartService {
         }
         return null;
     }
-
-
 }

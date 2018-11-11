@@ -1,77 +1,94 @@
 
 
 
-//ÉÌÆ·ÏêÏ¸Ò³£¨¿ØÖÆ²ã£©
-app.controller('itemController',function($scope){
+//å•†å“è¯¦ç»†é¡µï¼ˆæ§åˆ¶å±‚ï¼‰
+app.controller('itemController',function($scope,$http){
 
-	//¹ºÎï³µÊıÁ¿²Ù×÷
-	$scope.addNum=function(x){
-		$scope.num=$scope.num+x;
-		if($scope.num<1){
-			$scope.num=1;
-		}
-	}
-	
-	
-	$scope.specificationItems={};//¼ÇÂ¼ÓÃ»§Ñ¡ÔñµÄ¹æ¸ñ¶ÔÏóspecificationItems={"ÍøÂç":"ÒÆ¶¯4G","»úÉíÄÚ´æ":"128G",...}
-	
-	//ÓÃ»§Ñ¡Ôñ¹æ¸ñ
-	$scope.selectSpecifcation=function(key,value){
-		$scope.specificationItems[key]=value;
-		
-		//µ÷ÓÃ
-		$scope.searchSku();
-	}
-	//±»Ñ¡ÖĞµÄ¹æ¸ñ¸Ä±äÑùÊ½
-	$scope.isSelectSpecifcation=function(key ,value ){
-		if($scope.specificationItems[key]==value){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	$scope.sku={};//sku¶ÔÏó
-	$scope.loadSku=function(){
-		$scope.sku=skuList[0];//Ä¬ÈÏÊÇµÚÒ»¸öskuÉÌÆ·
-		//Ç³¿ËÂ¡,ÄÚÈİºÍÒıÓÃµØÖ·¶¼Ò»Ñù,ÆäÖĞÒ»¸ö±äÁ¿¸Ä±äÁíÒ»¸öÒ²»á¸Ä±ä
-		//Éî¿ËÂ¡,ÄÚÈİÒ»Ñù,µ«ÊÇÒıÓÃµØÖ·²»Ò»ÑùÊÇÁ½¸ö¶ÔÏó,(ÏÖ½«Ò»¸ö¶ÔÏó×ª»»³Éjson×Ö·û´®,ÔÚ×ª³Éjson¶ÔÏóÕâÑù¾Í±ä³ÉÉî¿ËÂ¡)
-		$scope.specificationItems=JSON.parse(JSON.stringify($scope.sku.spec));
-	}
-	
-	//±È½ÏÁ½¸ö¶ÔÏóµÄÄÚÈİÊÇ·ñÏàµÈ,µ±Ñ¡ÔñµÄsku¹æ¸ñspecificationItemsºÍskuListÖĞÊı¾İÓĞÏàÍ¬specÔòÏÔÊ¾¼Û¸ñ
-	matchObject=function(map1,map2){
-		if(map1.size!=map2.size){
-			return false;
-		}
-		for(var k in map1){
-			if(map1[k]!=map2[k]){
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	//¸ù¾İÑ¡ÔñµÄspecificationItems¹æ¸ñ²éÑ¯skuListÁĞ±íÆ¥Åä
-	$scope.searchSku=function(){
-		
-		//±éÀúSKUList
-		for(var i=0;i<skuList.length;i++){
-			if(matchObject(skuList[i].spec,$scope.specificationItems)){
-				$scope.sku=skuList[i];
-				return;
-			}
-		}
-		//Èç¹ûÓÃ»§Ñ¡ÔñµÄ¹æ¸ñºÍÊı¾İ¿âµÄskuList²»´æÔÚ¼´Ã»ÓĞÆ¥ÅäÉÏ
-		//Ôò×Ô¶¨Òå$scope.sku={};×ªUNcode±àÂë¸ñÊ½·ñÔòä¯ÀÀÆ÷ÂÒÂë
-		$scope.sku={id:0,title:'\u8865\u8d27\u4e2d',price:0};//Èç¹ûÃ»ÓĞÆ¥ÅäµÄ		
-		
-	}
-	
-	//Ìí¼Ó¹ºÎï³µ
-	$scope.addToCart=function(){
-		alert('skuid:'+$scope.sku.id);				
-	}
-	
-	
+    //è´­ç‰©è½¦æ•°é‡æ“ä½œ
+    $scope.addNum=function(x){
+        $scope.num=$scope.num+x;
+        if($scope.num<1){
+            $scope.num=1;
+        }
+    }
+
+
+    $scope.specificationItems={};//è®°å½•ç”¨æˆ·é€‰æ‹©çš„è§„æ ¼å¯¹è±¡specificationItems={"ç½‘ç»œ":"ç§»åŠ¨4G","æœºèº«å†…å­˜":"128G",...}
+
+    //ç”¨æˆ·é€‰æ‹©è§„æ ¼
+    $scope.selectSpecifcation=function(key,value){
+        $scope.specificationItems[key]=value;
+
+        //è°ƒç”¨
+        $scope.searchSku();
+    }
+    //è¢«é€‰ä¸­çš„è§„æ ¼æ”¹å˜æ ·å¼
+    $scope.isSelectSpecifcation=function(key ,value ){
+        if($scope.specificationItems[key]==value){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    $scope.sku={};//skuå¯¹è±¡
+    $scope.loadSku=function(){
+        $scope.sku=skuList[0];//é»˜è®¤æ˜¯ç¬¬ä¸€ä¸ªskuå•†å“
+        //æµ…å…‹éš†,å†…å®¹å’Œå¼•ç”¨åœ°å€éƒ½ä¸€æ ·,å…¶ä¸­ä¸€ä¸ªå˜é‡æ”¹å˜å¦ä¸€ä¸ªä¹Ÿä¼šæ”¹å˜
+        //æ·±å…‹éš†,å†…å®¹ä¸€æ ·,ä½†æ˜¯å¼•ç”¨åœ°å€ä¸ä¸€æ ·æ˜¯ä¸¤ä¸ªå¯¹è±¡,(ç°å°†ä¸€ä¸ªå¯¹è±¡è½¬æ¢æˆjsonå­—ç¬¦ä¸²,åœ¨è½¬æˆjsonå¯¹è±¡è¿™æ ·å°±å˜æˆæ·±å…‹éš†)
+        $scope.specificationItems=JSON.parse(JSON.stringify($scope.sku.spec));
+    }
+
+    //æ¯”è¾ƒä¸¤ä¸ªå¯¹è±¡çš„å†…å®¹æ˜¯å¦ç›¸ç­‰,å½“é€‰æ‹©çš„skuè§„æ ¼specificationItemså’ŒskuListä¸­æ•°æ®æœ‰ç›¸åŒspecåˆ™æ˜¾ç¤ºä»·æ ¼
+    matchObject=function(map1,map2){
+        if(map1.size!=map2.size){
+            return false;
+        }
+        for(var k in map1){
+            if(map1[k]!=map2[k]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //æ ¹æ®é€‰æ‹©çš„specificationItemsè§„æ ¼æŸ¥è¯¢skuListåˆ—è¡¨åŒ¹é…
+    $scope.searchSku=function(){
+
+        //éå†SKUList
+        for(var i=0;i<skuList.length;i++){
+            if(matchObject(skuList[i].spec,$scope.specificationItems)){
+                $scope.sku=skuList[i];
+                return;
+            }
+        }
+        //å¦‚æœç”¨æˆ·é€‰æ‹©çš„è§„æ ¼å’Œæ•°æ®åº“çš„skuListä¸å­˜åœ¨å³æ²¡æœ‰åŒ¹é…ä¸Š
+        //åˆ™è‡ªå®šä¹‰$scope.sku={};è½¬UNcodeç¼–ç æ ¼å¼å¦åˆ™æµè§ˆå™¨ä¹±ç 
+        $scope.sku={id:0,title:'\u8865\u8d27\u4e2d',price:0};//å¦‚æœæ²¡æœ‰åŒ¹é…çš„
+
+    }
+
+    //æ·»åŠ è´­ç‰©è½¦
+    $scope.addToCart=function(){
+    	//jsçš„è·¨åŸŸè¯·æ±‚è¿™é‡Œè¯´çš„jsè·¨åŸŸæ˜¯æŒ‡é€šè¿‡jsåœ¨ä¸åŒçš„åŸŸä¹‹é—´è¿›è¡Œæ•°æ®ä¼ è¾“æˆ–é€šä¿¡ï¼Œ
+		// æ¯”å¦‚ç”¨ajaxå‘ä¸€ä¸ªä¸åŒçš„åŸŸè¯·æ±‚æ•°æ®ï¼Œæˆ–è€…é€šè¿‡jsè·å–é¡µé¢ä¸­ä¸åŒåŸŸçš„æ¡†æ¶ä¸­(iframe)çš„æ•°æ®ã€‚
+		// åªè¦åè®®ã€åŸŸåã€ç«¯å£æœ‰ä»»ä½•ä¸€ä¸ªä¸åŒï¼Œéƒ½è¢«å½“ä½œæ˜¯ä¸åŒçš„åŸŸã€‚
+        //è·¨åŸŸæ“ä½œcookieéœ€è¦å®¢æˆ·ç«¯å’ŒæœåŠ¡ç«¯è®¾ç½®åè®®,"withCredentials":trueä¸ºtrueæ‰å¯ä»¥æ“ä½œcookie
+		$http.get("http://localhost:9107/cart/addGoodsToCartList.do?itemId="+$scope.sku.id+"&num="+$scope.num,{"withCredentials":true}).success(
+			function (response) {
+				if(response.success){
+					alert(response.message);
+					//å…ˆä¸åšè·³è½¬
+                    location.href='http://localhost:9107/cart.html';//è·³è½¬åˆ°è´­ç‰©è½¦é¡µé¢
+				}else{
+					alter(response.message);
+				}
+				
+            }
+		);
+    }
+
+
+
+
 });
